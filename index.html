@@ -56,6 +56,28 @@
       font-weight: bold;
       cursor: pointer;
     }
+  .cajaAdmin {
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.cajaAdmin b {
+  font-size:26px;
+  color:#17365D;
+}
+
+table th,
+table td {
+  padding:10px;
+  border:1px solid #ddd;
+}
+
+table td:first-child {
+  font-weight:bold;
+}    
   </style>
 </head>
 
@@ -71,17 +93,204 @@
 
     <p>Sistema inteligente de control de asistencia</p>
 
-    <button onclick="abrirAdmin()">
-      ABRIR MARCAQR ADMIN
-    </button>
+  <div id="inicioAdmin">
+
+  <button onclick="mostrarLogin()">
+    ABRIR MARCAQR ADMIN
+  </button>
+
+</div>
+
+<div id="loginAdmin" style="display:none; margin-top:25px;">
+
+  <h2>MARCAQR ADMIN</h2>
+
+  <p>Acceso administrativo</p>
+
+  <input
+    id="claveAdmin"
+    type="password"
+    placeholder="Clave de acceso"
+    style="
+      width:100%;
+      box-sizing:border-box;
+      padding:15px;
+      border:1px solid #ccc;
+      border-radius:10px;
+      font-size:17px;
+      text-align:center;
+      margin:10px 0;
+    "
+  >
+
+  <button onclick="ingresarAdmin()">
+    INGRESAR
+  </button>
+
+  <div id="mensajeAdmin"
+       style="margin-top:12px;font-weight:bold;"></div>
+
+</div>
+
+<div id="panelAdmin" style="display:none; margin-top:25px;"></div>  
 
   </div>
 
   <script>
-    function abrirAdmin() {
-      window.location.href =
-        "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec?panel=admin";
+   function mostrarLogin() {
+  document.getElementById("inicioAdmin").style.display = "none";
+  document.getElementById("loginAdmin").style.display = "block";
+}
+
+function ingresarAdmin() {
+
+  const clave = document
+    .getElementById("claveAdmin")
+    .value
+    .trim();
+
+  const mensaje =
+    document.getElementById("mensajeAdmin");
+
+  if (!clave) {
+    mensaje.innerHTML = "Ingrese la clave.";
+    return;
+  }
+
+  mensaje.innerHTML = "Cargando...";
+
+  const callback = "recibirDatosAdmin";
+
+  const script = document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=admin" +
+    "&clave=" + encodeURIComponent(clave) +
+    "&callback=" + callback +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+function recibirDatosAdmin(datos) {
+
+  const mensaje =
+    document.getElementById("mensajeAdmin");
+
+  if (!datos.ok) {
+    mensaje.innerHTML = "❌ Clave incorrecta";
+    return;
+  }
+
+  document.getElementById("loginAdmin").style.display = "none";
+
+  const panel =
+    document.getElementById("panelAdmin");
+
+  panel.style.display = "block";
+
+  let filas = "";
+
+  datos.personal.forEach(p => {
+
+    let color = "#666";
+
+    if (p.estado === "PUNTUAL") {
+      color = "#2e7d32";
     }
+
+    if (p.estado === "TARDANZA") {
+      color = "#c62828";
+    }
+
+    filas += `
+      <tr>
+        <td>${p.nombre}</td>
+        <td>${p.cargo}</td>
+        <td>${p.entrada || "--:--"}</td>
+        <td>${p.salida || "--:--"}</td>
+        <td style="font-weight:bold;color:${color};">
+          ${p.estado}
+        </td>
+      </tr>
+    `;
+  });
+
+  panel.innerHTML = `
+
+    <h2>MARCAQR ADMIN</h2>
+
+    <h3>${datos.institucion}</h3>
+
+    <p>Control de asistencia en tiempo real</p>
+
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:20px 0;
+    ">
+
+      <div class="cajaAdmin">
+        <b>${datos.presentes}</b><br>
+        Presentes
+      </div>
+
+      <div class="cajaAdmin">
+        <b>${datos.puntuales}</b><br>
+        Puntuales
+      </div>
+
+      <div class="cajaAdmin">
+        <b>${datos.tardanzas}</b><br>
+        Tardanzas
+      </div>
+
+      <div class="cajaAdmin">
+        <b>${datos.sinMarcar}</b><br>
+        Sin marcar
+      </div>
+
+      <div class="cajaAdmin">
+        <b>${datos.salidas}</b><br>
+        Salidas
+      </div>
+
+    </div>
+
+    <button onclick="location.reload()">
+      🔄 ACTUALIZAR
+    </button>
+
+    <div style="overflow-x:auto;margin-top:20px;">
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        font-size:13px;
+      ">
+
+        <thead>
+          <tr style="background:#17365D;color:white;">
+            <th>DOCENTE</th>
+            <th>CARGO</th>
+            <th>ENTRADA</th>
+            <th>SALIDA</th>
+            <th>ESTADO</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${filas}
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
