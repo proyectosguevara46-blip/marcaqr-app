@@ -78,7 +78,40 @@ table td {
 table td:first-child {
   font-weight:bold;
 }    
-  </style>
+/* DISEÑO PARA COMPUTADORA */
+@media (min-width: 800px) {
+
+  .contenedor {
+    max-width: 1100px;
+    width: 92%;
+  }
+
+  #panelAdmin {
+    width: 100%;
+  }
+
+  #panelAdmin > div:first-of-type {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+
+  .cajaAdmin {
+    padding: 20px 10px;
+  }
+
+  .cajaAdmin b {
+    font-size: 30px;
+  }
+
+  #panelAdmin table {
+    font-size: 15px !important;
+  }
+
+  #panelAdmin th,
+  #panelAdmin td {
+    padding: 12px;
+  }
+}  
+</style>
 </head>
 
 <body>
