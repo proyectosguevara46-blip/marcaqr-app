@@ -1,4 +1,4 @@
-const CACHE_NAME = "marcaqr-v2";
+const CACHE_NAME = "marcaqr-v3";
 
 const archivos = [
   "./",
