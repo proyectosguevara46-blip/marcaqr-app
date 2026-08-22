@@ -965,6 +965,105 @@ function recibirReporteMensual(datos) {
     panel.style.display = "none";
 
   }
+}   
+ function cargarTardanzas() {
+
+  const mes = document
+    .getElementById("mesTardanzas")
+    .value;
+
+  const resultado =
+    document.getElementById("resultadoTardanzas");
+
+  if (!mes) {
+    resultado.innerHTML = "Seleccione un mes.";
+    return;
+  }
+
+  resultado.innerHTML = "Cargando tardanzas...";
+
+  const clave = document
+    .getElementById("claveAdmin")
+    .value
+    .trim();
+
+  const callback = "recibirTardanzas";
+
+  const script =
+    document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=tardanzas" +
+    "&clave=" + encodeURIComponent(clave) +
+    "&mes=" + encodeURIComponent(mes) +
+    "&callback=" + callback +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function recibirTardanzas(datos) {
+
+  const resultado =
+    document.getElementById("resultadoTardanzas");
+
+  if (!datos.ok) {
+    resultado.innerHTML =
+      "❌ " + datos.mensaje;
+    return;
+  }
+
+  if (!datos.tardanzas.length) {
+    resultado.innerHTML =
+      "✅ No se registraron tardanzas en este mes.";
+    return;
+  }
+
+  let filas = "";
+
+  datos.tardanzas.forEach(t => {
+
+    filas += `
+      <tr>
+        <td>${t.fecha}</td>
+        <td>${t.nombre}</td>
+        <td>${t.cargo}</td>
+        <td>${t.horaProgramada || "--:--"}</td>
+        <td>${t.horaEntrada || "--:--"}</td>
+      </tr>
+    `;
+  });
+
+  resultado.innerHTML = `
+    <div style="overflow-x:auto;">
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        margin-top:10px;
+      ">
+
+        <thead>
+          <tr style="background:#f28c18;color:white;">
+            <th>FECHA</th>
+            <th>DOCENTE</th>
+            <th>CARGO</th>
+            <th>HORA PROGRAMADA</th>
+            <th>HORA ENTRADA</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${filas}
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
 }       
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
