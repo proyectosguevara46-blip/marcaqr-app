@@ -805,7 +805,106 @@ function actualizarFechaHoraPanel() {
     } else {
         panel.style.display = "none";
     }
-}       
+}   
+  function cargarReporteMensual() {
+
+  const mes = document
+    .getElementById("mesReporte")
+    .value;
+
+  const resultado =
+    document.getElementById("resultadoReporteMensual");
+
+  if (!mes) {
+    resultado.innerHTML = "Seleccione un mes.";
+    return;
+  }
+
+  resultado.innerHTML = "Cargando reporte...";
+
+  const clave = document
+    .getElementById("claveAdmin")
+    .value
+    .trim();
+
+  const callback =
+    "recibirReporteMensual";
+
+  const script =
+    document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=reporteMensual" +
+    "&clave=" + encodeURIComponent(clave) +
+    "&mes=" + encodeURIComponent(mes) +
+    "&callback=" + callback +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function recibirReporteMensual(datos) {
+
+  const resultado =
+    document.getElementById("resultadoReporteMensual");
+
+  if (!datos.ok) {
+    resultado.innerHTML =
+      "❌ " + datos.mensaje;
+    return;
+  }
+
+  let filas = "";
+
+  datos.personal.forEach(p => {
+
+    filas += `
+      <tr>
+        <td>${p.nombre}</td>
+        <td>${p.asistencias}</td>
+        <td>${p.puntuales}</td>
+        <td>${p.tardanzas}</td>
+        <td>${p.faltas}</td>
+        <td>${p.porcentaje}%</td>
+      </tr>
+    `;
+  });
+
+  resultado.innerHTML = `
+    <div style="overflow-x:auto;">
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        margin-top:10px;
+      ">
+
+        <thead>
+          <tr style="
+            background:#17365D;
+            color:white;
+          ">
+            <th>DOCENTE</th>
+            <th>ASISTENCIAS</th>
+            <th>PUNTUALES</th>
+            <th>TARDANZAS</th>
+            <th>FALTAS</th>
+            <th>% ASISTENCIA</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${filas}
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}      
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
