@@ -244,14 +244,6 @@ body {
 
   <div class="contenedor">
 
-    <img src="icono-marcaqr.png"
-         class="logo"
-         alt="MARCAQR">
-
-    <h1>MARCAQR</h1>
-
-    <p>Sistema inteligente de control de asistencia</p>
-
   <div id="inicioAdmin">
 
   <button onclick="mostrarLogin()">
@@ -377,31 +369,6 @@ function recibirDatosAdmin(datos) {
   });
 
   panel.innerHTML = `
-  actualizarFechaHoraPanel();
-  function actualizarFechaHoraPanel() {
-
-  const ahora = new Date();
-
-  const fecha = ahora.toLocaleDateString("es-PE", {
-    day:"2-digit",
-    month:"long",
-    year:"numeric"
-  });
-
-  const hora = ahora.toLocaleTimeString("es-PE", {
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit"
-  });
-
-  const fechaElemento = document.getElementById("fechaPanel");
-  const horaElemento = document.getElementById("horaPanel");
-
-  if (fechaElemento) fechaElemento.textContent = fecha;
-  if (horaElemento) horaElemento.textContent = hora;
-
-  setTimeout(actualizarFechaHoraPanel, 1000);
-}
 
   <div class="cabeceraAdmin">
 
@@ -535,8 +502,32 @@ function recibirDatosAdmin(datos) {
 
     </div>
   `;
+ actualizarFechaHoraPanel();
 }
+function actualizarFechaHoraPanel() {
 
+  const ahora = new Date();
+
+  const fecha = ahora.toLocaleDateString("es-PE", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  const hora = ahora.toLocaleTimeString("es-PE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  const fechaElemento = document.getElementById("fechaPanel");
+  const horaElemento = document.getElementById("horaPanel");
+
+  if (fechaElemento) fechaElemento.textContent = fecha;
+  if (horaElemento) horaElemento.textContent = hora;
+
+  setTimeout(actualizarFechaHoraPanel, 1000);
+}
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
