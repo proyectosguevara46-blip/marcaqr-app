@@ -237,6 +237,72 @@ body {
 .tituloPanel p {
   margin-top:0;
 }
+.accionesAdmin {
+  display:grid;
+  grid-template-columns:
+    1.1fr 1.35fr 1fr 0.9fr 1.15fr 1.25fr 1.5fr;
+  gap:10px;
+  align-items:center;
+  margin:18px 0;
+}
+
+.btnAdmin {
+  width:100%;
+  border:none;
+  border-radius:10px;
+  padding:14px 10px;
+  color:white;
+  font-size:14px;
+  font-weight:bold;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+
+.btnAzul {
+  background:#0d3f7a;
+}
+
+.btnVerde {
+  background:#159b35;
+}
+
+.btnNaranja {
+  background:#f28c18;
+}
+
+.btnRojo {
+  background:#e3222e;
+}
+
+.btnMorado {
+  background:#7042d6;
+}
+
+.btnCeleste {
+  background:#2865e8;
+}
+
+.buscarDocente {
+  width:100%;
+  box-sizing:border-box;
+  padding:14px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:14px;
+  background:white;
+}
+
+@media (max-width:800px) {
+
+  .accionesAdmin {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .buscarDocente {
+    grid-column:1 / -1;
+  }
+
+}
 </style>
 </head>
 
@@ -437,41 +503,41 @@ function recibirDatosAdmin(datos) {
   <p>Sistema inteligente de control de asistencia</p>
 </div>  
 
-    <div style="
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin:20px 0;
-    ">
+  <div class="accionesAdmin">
 
-      <div class="cajaAdmin">
-        <b>${datos.presentes}</b><br>
-        Presentes
-      </div>
+  <button class="btnAdmin btnAzul" onclick="location.reload()">
+    🔄 ACTUALIZAR
+  </button>
 
-      <div class="cajaAdmin">
-        <b>${datos.puntuales}</b><br>
-        Puntuales
-      </div>
+  <button class="btnAdmin btnVerde" onclick="mostrarReporteMensual()">
+    📊 REPORTE MENSUAL
+  </button>
 
-      <div class="cajaAdmin">
-        <b>${datos.tardanzas}</b><br>
-        Tardanzas
-      </div>
+  <button class="btnAdmin btnNaranja" onclick="mostrarTardanzas()">
+    🕐 TARDANZAS
+  </button>
 
-      <div class="cajaAdmin">
-        <b>${datos.sinMarcar}</b><br>
-        Sin marcar
-      </div>
+  <button class="btnAdmin btnRojo" onclick="mostrarFaltas()">
+    👤 FALTAS
+  </button>
 
-      <div class="cajaAdmin">
-        <b>${datos.salidas}</b><br>
-        Salidas
-      </div>
+  <button class="btnAdmin btnMorado" onclick="exportarPDF()">
+    📄 EXPORTAR PDF
+  </button>
 
-    </div>
+  <button class="btnAdmin btnCeleste" onclick="exportarExcel()">
+    📊 EXPORTAR EXCEL
+  </button>
 
-    <button onclick="location.reload()">
+  <input
+    id="buscarDocente"
+    class="buscarDocente"
+    type="text"
+    placeholder="🔍 Buscar docente..."
+    oninput="filtrarDocentes()"
+  >
+
+</div>  
       🔄 ACTUALIZAR
     </button>
 
@@ -502,8 +568,9 @@ function recibirDatosAdmin(datos) {
 
     </div>
   `;
- actualizarFechaHoraPanel();
+ actualizarFechaHoraPanel();    
 }
+        
 function actualizarFechaHoraPanel() {
 
   const ahora = new Date();
@@ -527,6 +594,27 @@ function actualizarFechaHoraPanel() {
   if (horaElemento) horaElemento.textContent = hora;
 
   setTimeout(actualizarFechaHoraPanel, 1000);
+}
+ function filtrarDocentes() {
+
+  const texto = document
+    .getElementById("buscarDocente")
+    .value
+    .toLowerCase()
+    .trim();
+
+  const filas = document.querySelectorAll("#panelAdmin table tbody tr");
+
+  filas.forEach(fila => {
+
+    const contenido = fila.innerText
+      .toLowerCase();
+
+    fila.style.display =
+      contenido.includes(texto)
+        ? ""
+        : "none";
+  });
 }
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
