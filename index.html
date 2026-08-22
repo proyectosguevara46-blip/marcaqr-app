@@ -120,6 +120,123 @@ body {
     padding: 12px;
   }
 }  
+.cabeceraAdmin {
+  display:grid;
+  grid-template-columns:240px 1fr 240px;
+  gap:20px;
+  align-items:center;
+  background:white;
+  padding:22px;
+  border-radius:20px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+  margin-bottom:22px;
+}
+
+.marcaBloque,
+.institucionBloque {
+  text-align:center;
+}
+
+.logoMarcaAdmin,
+.logoInstitucion {
+  width:150px;
+  max-height:150px;
+  object-fit:contain;
+}
+
+.marcaTexto {
+  font-size:34px;
+  font-weight:800;
+  color:#17365D;
+  margin-top:8px;
+}
+
+.marcaTexto span {
+  color:#2eaa45;
+}
+
+.marcaSlogan {
+  font-size:11px;
+  font-weight:bold;
+  color:#17365D;
+  margin-top:4px;
+}
+
+.institucionNombre {
+  font-size:28px;
+  font-weight:800;
+  color:#17365D;
+  margin-top:8px;
+}
+
+.institucionSub {
+  font-size:14px;
+  font-weight:bold;
+  color:#17365D;
+  margin-top:3px;
+}
+
+.resumenSuperior {
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:12px;
+}
+
+.kpi {
+  background:white;
+  padding:14px 8px;
+  border-radius:14px;
+  text-align:center;
+  box-shadow:0 3px 10px rgba(0,0,0,.10);
+  border-bottom:4px solid #17365D;
+}
+
+.kpiIcono {
+  font-size:26px;
+}
+
+.kpiNumero {
+  font-size:34px;
+  font-weight:800;
+  margin-top:4px;
+}
+
+.kpiTexto {
+  font-size:14px;
+  margin-top:2px;
+}
+
+.kpiAzul { border-bottom-color:#1e73ea; }
+.kpiVerde { border-bottom-color:#2eaa45; }
+.kpiNaranja { border-bottom-color:#f28c18; }
+.kpiRojo { border-bottom-color:#e3222e; }
+.kpiMorado { border-bottom-color:#7646e7; }
+
+.datosRapidos {
+  grid-column:1 / -1;
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+  margin-top:8px;
+  font-size:14px;
+  color:#17365D;
+  font-weight:bold;
+}
+
+.tituloPanel {
+  text-align:center;
+  margin:15px 0 20px 0;
+}
+
+.tituloPanel h2 {
+  color:#17365D;
+  margin-bottom:4px;
+}
+
+.tituloPanel p {
+  margin-top:0;
+}
 </style>
 </head>
 
@@ -260,12 +377,98 @@ function recibirDatosAdmin(datos) {
   });
 
   panel.innerHTML = `
+  actualizarFechaHoraPanel();
+  function actualizarFechaHoraPanel() {
 
-    <h2>MARCAQR ADMIN</h2>
+  const ahora = new Date();
 
-    <h3>${datos.institucion}</h3>
+  const fecha = ahora.toLocaleDateString("es-PE", {
+    day:"2-digit",
+    month:"long",
+    year:"numeric"
+  });
 
-    <p>Control de asistencia en tiempo real</p>
+  const hora = ahora.toLocaleTimeString("es-PE", {
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit"
+  });
+
+  const fechaElemento = document.getElementById("fechaPanel");
+  const horaElemento = document.getElementById("horaPanel");
+
+  if (fechaElemento) fechaElemento.textContent = fecha;
+  if (horaElemento) horaElemento.textContent = hora;
+
+  setTimeout(actualizarFechaHoraPanel, 1000);
+}
+
+  <div class="cabeceraAdmin">
+
+  <div class="marcaBloque">
+    <img src="./icono-marcaqr.png"
+         class="logoMarcaAdmin"
+         alt="MARCAQR">
+
+    <div class="marcaTexto">MARCA<span>QR</span></div>
+    <div class="marcaSlogan">ASISTENCIA • CONTROL • CONFIANZA</div>
+  </div>
+
+  <div class="resumenSuperior">
+
+    <div class="kpi kpiAzul">
+      <div class="kpiIcono">👥</div>
+      <div class="kpiNumero">${datos.presentes}</div>
+      <div class="kpiTexto">Presentes</div>
+    </div>
+
+    <div class="kpi kpiVerde">
+      <div class="kpiIcono">✅</div>
+      <div class="kpiNumero">${datos.puntuales}</div>
+      <div class="kpiTexto">Puntuales</div>
+    </div>
+
+    <div class="kpi kpiNaranja">
+      <div class="kpiIcono">🕐</div>
+      <div class="kpiNumero">${datos.tardanzas}</div>
+      <div class="kpiTexto">Tardanzas</div>
+    </div>
+
+    <div class="kpi kpiRojo">
+      <div class="kpiIcono">👤</div>
+      <div class="kpiNumero">${datos.sinMarcar}</div>
+      <div class="kpiTexto">Sin marcar</div>
+    </div>
+
+    <div class="kpi kpiMorado">
+      <div class="kpiIcono">🚪</div>
+      <div class="kpiNumero">${datos.salidas}</div>
+      <div class="kpiTexto">Salidas</div>
+    </div>
+
+    <div class="datosRapidos">
+      <span>📅 <span id="fechaPanel"></span></span>
+      <span>🕐 <span id="horaPanel"></span></span>
+      <span>👥 Total personal: ${datos.personal.length}</span>
+    </div>
+
+  </div>
+
+  <div class="institucionBloque">
+    <img src="./logo-ininpe.png"
+         class="logoInstitucion"
+         alt="ININPE">
+
+    <div class="institucionNombre">${datos.institucion}</div>
+    <div class="institucionSub">INSTITUCIÓN EDUCATIVA</div>
+  </div>
+
+</div>
+
+<div class="tituloPanel">
+  <h2>MARCAQR ADMIN</h2>
+  <p>Sistema inteligente de control de asistencia</p>
+</div>  
 
     <div style="
       display:grid;
