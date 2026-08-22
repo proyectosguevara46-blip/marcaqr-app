@@ -340,6 +340,7 @@ body {
 <body>
 
   <div class="contenedor">
+<div id="portadaMarcaqr">        
 <img src="./icono-marcaqr.png"
      class="logo"
      alt="MARCAQR">
@@ -347,7 +348,7 @@ body {
   <div class="nombreMarcaInicio">
     MARCA<span>QR</span>
   </div>
-
+</div>
   <div class="sloganMarcaInicio">
     ASISTENCIA • CONTROL • CONFIANZA
   </div>
@@ -443,7 +444,7 @@ function recibirDatosAdmin(datos) {
   }
 
   document.getElementById("loginAdmin").style.display = "none";
-
+document.getElementById("portadaMarcaqr").style.display = "none";
   const panel =
     document.getElementById("panelAdmin");
 
