@@ -122,7 +122,7 @@ body {
 }  
 .cabeceraAdmin {
   display:grid;
-  grid-template-columns:240px 1fr 240px;
+  grid-template-columns:230px 1fr 230px;
   gap:20px;
   align-items:center;
   background:white;
@@ -135,6 +135,8 @@ body {
 .marcaBloque,
 .institucionBloque {
   text-align:center;
+  justify-self:end;
+  width:210px;
 }
 
 .logoMarcaAdmin,
@@ -178,13 +180,15 @@ body {
 
 .resumenSuperior {
   display:grid;
-  grid-template-columns:repeat(5, 1fr);
-  gap:12px;
+grid-template-columns:repeat(5, minmax(105px, 1fr));
+  gap:14px;
+  width:100%;    
 }
 
 .kpi {
   background:white;
-  padding:14px 8px;
+  padding:18px 10px;
+  min-width:105px;   
   border-radius:14px;
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,.10);
@@ -192,18 +196,18 @@ body {
 }
 
 .kpiIcono {
-  font-size:26px;
+  font-size:32px;
 }
 
 .kpiNumero {
-  font-size:34px;
+  font-size:38px;
   font-weight:800;
   margin-top:4px;
 }
 
 .kpiTexto {
-  font-size:14px;
-  margin-top:2px;
+  font-size:15px;
+  margin-top:3px;
 }
 
 .kpiAzul { border-bottom-color:#1e73ea; }
