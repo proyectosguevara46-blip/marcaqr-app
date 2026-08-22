@@ -304,14 +304,90 @@ grid-template-columns:repeat(5, minmax(105px, 1fr));
 }
 
 @media (max-width:800px) {
+    .cabeceraAdmin {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        width:100%;
+        padding:20px 12px;
+        gap:18px;
+        box-sizing:border-box;
+    }
 
-  .accionesAdmin {
-    grid-template-columns:1fr 1fr;
-  }
+    .marcaBloque {
+        width:100%;
+        text-align:center;
+        order:1;
+    }
 
-  .buscarDocente {
+    .institucionBloque {
+        width:100%;
+        text-align:center;
+        justify-self:auto;
+        order:2;
+    }
+
+  .resumenCentro {
+    width:100%;
+    order:3;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:12px;
+    justify-items:stretch;
+}  
+  .resumenCentro .kpi {
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+}
+
+.resumenCentro .kpi:last-child {
     grid-column:1 / -1;
-  }
+    width:50%;
+    justify-self:center;
+}   
+   .resumenCentro .kpi:last-child {
+    grid-column:1 / -1;
+    width:50%;
+    justify-self:center;
+}
+
+.logoInstitucion {
+    width:130px;
+    max-height:130px;
+    object-fit:contain;
+}
+
+.institucionNombre {
+    font-size:24px;
+    text-align:center;
+}
+
+.institucionSub {
+    font-size:13px;
+    text-align:center;
+}
+.datosRapidos {
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:4px;
+    font-size:14px;
+    text-align:center;
+}
+.accionesAdmin {
+    grid-template-columns:1fr 1fr;
+}   
+    .accionesAdmin {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .buscarDocente {
+        grid-column:1 / -1;
+    }
 
 }
  .logo {
