@@ -1,0 +1,74 @@
+<style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6f8;
+      text-align: center;
+    }
+
+    .contenedor {
+      max-width: 420px;
+      margin: 60px auto;
+      padding: 30px;
+    }
+
+    .logo {
+      width: 180px;
+      border-radius: 25px;
+    }
+
+    h1 {
+      color: #17365D;
+      margin-bottom: 5px;
+    }
+
+    p {
+      color: #555;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #17365D;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+    <img src="icono-marcaqr.png"
+         class="logo"
+         alt="MARCAQR">
+
+    <h1>MARCAQR</h1>
+
+    <p>Sistema inteligente de control de asistencia</p>
+
+    <button onclick="abrirAdmin()">
+      ABRIR MARCAQR ADMIN
+    </button>
+
+  </div>
+
+  <script>
+    function abrirAdmin() {
+      window.location.href =
+        "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec?panel=admin";
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
+
+</body>
+</html>
