@@ -720,6 +720,50 @@ document.getElementById("portadaMarcaqr").style.display = "none";
   </div>
 
 </div>
+<div id="tardanzasPanel" style="display:none; margin:20px 0;">
+
+  <div style="
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+  ">
+
+    <h3 style="margin-top:0;color:#f28c18;">
+      🕐 REPORTE DE TARDANZAS
+    </h3>
+
+    <label style="font-weight:bold;">
+      Seleccionar mes:
+    </label>
+
+    <input
+      type="month"
+      id="mesTardanzas"
+      style="
+        width:100%;
+        box-sizing:border-box;
+        padding:12px;
+        margin:10px 0 15px 0;
+        border:1px solid #ccc;
+        border-radius:10px;
+        font-size:16px;
+      "
+    >
+
+    <button
+      class="btnAdmin btnNaranja"
+      onclick="cargarTardanzas()">
+      🕐 CONSULTAR TARDANZAS
+    </button>
+
+    <div id="resultadoTardanzas"
+         style="margin-top:20px;">
+    </div>
+
+  </div>
+
+</div>
     <div style="overflow-x:auto;margin-top:20px;">
 
       <table style="
@@ -844,7 +888,6 @@ function actualizarFechaHoraPanel() {
   document.body.appendChild(script);
 }
 
-
 function recibirReporteMensual(datos) {
 
   const resultado =
@@ -904,7 +947,25 @@ function recibirReporteMensual(datos) {
 
     </div>
   `;
-}      
+}   
+ function mostrarTardanzas() {
+
+  const panel =
+    document.getElementById("tardanzasPanel");
+
+  if (!panel) return;
+
+  if (panel.style.display === "none" ||
+      panel.style.display === "") {
+
+    panel.style.display = "block";
+
+  } else {
+
+    panel.style.display = "none";
+
+  }
+}       
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
