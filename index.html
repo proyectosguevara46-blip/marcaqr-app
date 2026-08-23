@@ -435,6 +435,8 @@ grid-template-columns:repeat(5, minmax(105px, 1fr));
   letter-spacing:.5px;
 }      
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>      
 </head>
 
 <body>
@@ -932,7 +934,7 @@ function actualizarFechaHoraPanel() {
 
   document.body.appendChild(script);
 }
-
+let ultimoReporteMensual = null;
 function recibirReporteMensual(datos) {
 
   const resultado =
@@ -943,7 +945,7 @@ function recibirReporteMensual(datos) {
       "❌ " + datos.mensaje;
     return;
   }
-
+ultimoReporteMensual = datos;
   let filas = "";
 
   datos.personal.forEach(p => {
@@ -1204,7 +1206,121 @@ function recibirFaltas(datos) {
       </table>
     </div>
   `;
-}       
+}  
+unction exportarPDF() {
+
+  if (!ultimoReporteMensual ||
+      !ultimoReporteMensual.personal) {
+
+    alert("Primero genere el REPORTE MENSUAL que desea exportar.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "mm",
+    format: "a4"
+  });
+
+  const mes = ultimoReporteMensual.mes || "";
+
+  doc.setFontSize(20);
+  doc.setTextColor(23, 54, 93);
+
+  doc.text(
+    "MARCAQR - REPORTE MENSUAL DE ASISTENCIA",
+    148,
+    18,
+    { align: "center" }
+  );
+
+  doc.setFontSize(13);
+  doc.setTextColor(0, 0, 0);
+
+  doc.text(
+    "ININPE JV",
+    148,
+    27,
+    { align: "center" }
+  );
+
+  doc.setFontSize(11);
+
+  doc.text(
+    "Periodo: " + mes,
+    14,
+    38
+  );
+
+  const filas = ultimoReporteMensual.personal.map(p => [
+    p.nombre,
+    p.cargo || "",
+    p.asistencias,
+    p.puntuales,
+    p.tardanzas,
+    p.faltas,
+    p.porcentaje + "%"
+  ]);
+
+  doc.autoTable({
+    startY: 44,
+
+    head: [[
+      "DOCENTE",
+      "CARGO",
+      "ASISTENCIAS",
+      "PUNTUALES",
+      "TARDANZAS",
+      "FALTAS",
+      "% ASISTENCIA"
+    ]],
+
+    body: filas,
+
+    styles: {
+      fontSize: 9,
+      cellPadding: 3
+    },
+
+    headStyles: {
+      fillColor: [23, 54, 93],
+      textColor: 255,
+      halign: "center"
+    },
+
+    columnStyles: {
+      0: { cellWidth: 58 },
+      1: { cellWidth: 48 },
+      2: { halign: "center" },
+      3: { halign: "center" },
+      4: { halign: "center" },
+      5: { halign: "center" },
+      6: { halign: "center" }
+    }
+  });
+
+  const fecha =
+    new Date().toLocaleDateString("es-PE");
+
+  const finalY =
+    doc.lastAutoTable.finalY + 10;
+
+  doc.setFontSize(9);
+
+  doc.text(
+    "Generado por MARCAQR el " + fecha,
+    14,
+    finalY
+  );
+
+  doc.save(
+    "MARCAQR_Reporte_" +
+    mes +
+    ".pdf"
+  );
+}        
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
