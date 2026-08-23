@@ -1223,7 +1223,21 @@ function exportarPDF() {
     unit: "mm",
     format: "a4"
   });
+const logoColegio = new Image();
+logoColegio.src = "./logo-ininpe.png";
 
+try {
+  doc.addImage(
+    logoColegio,
+    "PNG",
+    14,   // posición izquierda
+    8,    // posición superior
+    22,   // ancho
+    22    // alto
+  );
+} catch (error) {
+  console.log("Logo aún no disponible");
+}
   const mes = ultimoReporteMensual.mes || "";
 
   doc.setFontSize(20);
