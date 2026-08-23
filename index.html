@@ -764,6 +764,50 @@ document.getElementById("portadaMarcaqr").style.display = "none";
   </div>
 
 </div>
+<div id="faltasPanel" style="display:none; margin:20px 0;">
+
+  <div style="
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+  ">
+
+    <h3 style="margin-top:0;color:#e3222e;">
+      👤 REPORTE DE FALTAS
+    </h3>
+
+    <label style="font-weight:bold;">
+      Seleccionar mes:
+    </label>
+
+    <input
+      type="month"
+      id="mesFaltas"
+      style="
+        width:100%;
+        box-sizing:border-box;
+        padding:12px;
+        margin:10px 0 15px 0;
+        border:1px solid #ccc;
+        border-radius:10px;
+        font-size:16px;
+      "
+    >
+
+    <button
+      class="btnAdmin btnRojo"
+      onclick="cargarFaltas()">
+      👤 CONSULTAR FALTAS
+    </button>
+
+    <div id="resultadoFaltas"
+         style="margin-top:20px;">
+    </div>
+
+  </div>
+
+</div>
     <div style="overflow-x:auto;margin-top:20px;">
 
       <table style="
@@ -790,6 +834,7 @@ document.getElementById("portadaMarcaqr").style.display = "none";
       </table>
 
     </div>
+    
   `;
  actualizarFechaHoraPanel();    
 }
@@ -1062,6 +1107,101 @@ function recibirTardanzas(datos) {
 
       </table>
 
+    </div>
+  `;
+}  
+ function mostrarFaltas() {
+
+  const panel = document.getElementById("faltasPanel");
+
+  if (!panel) return;
+
+  if (panel.style.display === "none" ||
+      panel.style.display === "") {
+    panel.style.display = "block";
+  } else {
+    panel.style.display = "none";
+  }
+}
+
+
+function cargarFaltas() {
+
+  const mes = document.getElementById("mesFaltas").value;
+  const resultado = document.getElementById("resultadoFaltas");
+
+  if (!mes) {
+    resultado.innerHTML = "Seleccione un mes.";
+    return;
+  }
+
+  resultado.innerHTML = "Cargando faltas...";
+
+  const clave = document
+    .getElementById("claveAdmin")
+    .value
+    .trim();
+
+  const script = document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=faltas" +
+    "&clave=" + encodeURIComponent(clave) +
+    "&mes=" + encodeURIComponent(mes) +
+    "&callback=recibirFaltas" +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function recibirFaltas(datos) {
+
+  const resultado = document.getElementById("resultadoFaltas");
+
+  if (!datos.ok) {
+    resultado.innerHTML = "❌ " + datos.mensaje;
+    return;
+  }
+
+  if (!datos.faltas || datos.faltas.length === 0) {
+    resultado.innerHTML =
+      "✅ No se registraron faltas en este mes.";
+    return;
+  }
+
+  let filas = "";
+
+  datos.faltas.forEach(f => {
+    filas += `
+      <tr>
+        <td>${f.fecha}</td>
+        <td>${f.nombre}</td>
+        <td>${f.cargo}</td>
+      </tr>
+    `;
+  });
+
+  resultado.innerHTML = `
+    <div style="overflow-x:auto;">
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        background:white;
+        margin-top:10px;
+      ">
+        <thead>
+          <tr style="background:#e3222e;color:white;">
+            <th>FECHA</th>
+            <th>DOCENTE</th>
+            <th>CARGO</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filas}
+        </tbody>
+      </table>
     </div>
   `;
 }       
