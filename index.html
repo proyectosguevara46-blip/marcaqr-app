@@ -437,6 +437,7 @@ grid-template-columns:repeat(5, minmax(105px, 1fr));
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>      
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -1334,7 +1335,53 @@ try {
     mes +
     ".pdf"
   );
-}        
+}   
+ function exportarExcel() {
+
+  if (!ultimoReporteMensual ||
+      !ultimoReporteMensual.personal) {
+
+    alert("Primero genere el REPORTE MENSUAL que desea exportar.");
+    return;
+  }
+
+  const mes = ultimoReporteMensual.mes || "";
+
+  const datosExcel = ultimoReporteMensual.personal.map(p => ({
+    "DOCENTE": p.nombre,
+    "CARGO": p.cargo || "",
+    "ASISTENCIAS": p.asistencias,
+    "PUNTUALES": p.puntuales,
+    "TARDANZAS": p.tardanzas,
+    "FALTAS": p.faltas,
+    "% ASISTENCIA": p.porcentaje + "%"
+  }));
+
+  const hoja = XLSX.utils.json_to_sheet(datosExcel);
+
+  hoja["!cols"] = [
+    { wch: 32 },
+    { wch: 28 },
+    { wch: 14 },
+    { wch: 14 },
+    { wch: 14 },
+    { wch: 12 },
+    { wch: 16 }
+  ];
+
+  const libro = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    libro,
+    hoja,
+    "Reporte mensual"
+  );
+
+  XLSX.writeFile(
+    libro,
+    "MARCAQR_Reporte_" + mes + ".xlsx"
+  );
+}       
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js");
     }
