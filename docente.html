@@ -152,7 +152,39 @@
   </div>
 
   <div id="mensaje" style="margin-top:15px;"></div>
+<div id="panelMarcacion" style="display:none; margin-top:20px;">
 
+  <h2 id="nombreInstitucion">INSTITUCIÓN EDUCATIVA</h2>
+
+  <p>Control inteligente de asistencia</p>
+
+  <div id="fechaHora" style="margin:15px 0; font-weight:bold;"></div>
+
+  <input
+    id="dniDocente"
+    type="text"
+    placeholder="DNI">
+
+  <input
+    id="pinDocente"
+    type="password"
+    placeholder="PIN">
+
+  <button
+    class="entrada"
+    onclick="marcarDocente('ENTRADA')">
+    ✅ MARCAR ENTRADA
+  </button>
+
+  <button
+    class="salida"
+    onclick="marcarDocente('SALIDA')">
+    🚪 MARCAR SALIDA
+  </button>
+
+  <div id="resultadoMarcacion" style="margin-top:15px;"></div>
+
+</div>
 </div>
 
 </div>
@@ -183,11 +215,19 @@ function iniciarEscaner() {
 
       escanerQR.stop().then(function() {
 
-        if (textoQR.startsWith("https://")) {
-          window.location.href = textoQR;
-        } else {
-          mensaje.innerHTML = "❌ QR no válido.";
-        }
+    if (textoQR.startsWith("https://")) {
+
+  mensaje.innerHTML =
+    "✅ QR institucional verificado.";
+
+  document.getElementById("lectorQR").style.display = "none";
+  document.getElementById("panelMarcacion").style.display = "block";
+
+} else {
+
+  mensaje.innerHTML =
+    "❌ QR institucional no válido.";
+}    
 
       });
 
@@ -200,6 +240,82 @@ function iniciarEscaner() {
       "❌ No se pudo abrir la cámara. Permite el acceso a la cámara.";
   });
 }
+function actualizarFechaHora() {
+
+  const ahora = new Date();
+
+  const fecha = ahora.toLocaleDateString("es-PE", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  const hora = ahora.toLocaleTimeString("es-PE");
+
+  const elemento = document.getElementById("fechaHora");
+
+  if (elemento) {
+    elemento.innerHTML =
+      "📅 Fecha: " + fecha +
+      "<br>🕐 Hora: " + hora;
+  }
+}
+
+setInterval(actualizarFechaHora, 1000);
+actualizarFechaHora();
+
+
+function marcarDocente(tipo) {
+
+  const dni =
+    document.getElementById("dniDocente").value.trim();
+
+  const pin =
+    document.getElementById("pinDocente").value.trim();
+
+  const resultado =
+    document.getElementById("resultadoMarcacion");
+
+  if (!dni || !pin) {
+    resultado.innerHTML = "❌ Ingrese su DNI y PIN.";
+    return;
+  }
+
+  resultado.innerHTML = "⏳ Registrando asistencia...";
+
+  const script = document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=docente" +
+    "&dni=" + encodeURIComponent(dni) +
+    "&pin=" + encodeURIComponent(pin) +
+    "&tipo=" + encodeURIComponent(tipo) +
+    "&callback=respuestaMarcacion" +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function respuestaMarcacion(datos) {
+
+  const resultado =
+    document.getElementById("resultadoMarcacion");
+
+  if (!datos.ok) {
+    resultado.innerHTML =
+      "❌ " + datos.mensaje;
+    return;
+  }
+
+  resultado.innerHTML =
+    "✅ " + datos.mensaje;
+
+  document.getElementById("dniDocente").value = "";
+  document.getElementById("pinDocente").value = "";
+}  
 </script>
 
 </body>
