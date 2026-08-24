@@ -1,1 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+  <link rel="manifest" href="./manifest-docente.json">
+
+<meta name="theme-color" content="#17365D">
+
+<link rel="icon" type="image/png" sizes="192x192"
+      href="./icono-marcaqr-192.png">
+
+<link rel="apple-touch-icon"
+      href="./icono-marcaqr-192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MARCAQR DOCENTE</title>
+
+  <link rel="icon" type="image/png" href="./icono-marcaqr-192.png">
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#f3f6f8;
+      text-align:center;
+      color:#17365D;
+    }
+
+    .contenedor{
+      max-width:430px;
+      margin:30px auto;
+      padding:22px;
+      box-sizing:border-box;
+    }
+
+    .logo{
+      width:170px;
+      height:auto;
+      display:block;
+      margin:10px auto 10px auto;
+    }
+
+    .marca{
+      font-size:32px;
+      font-weight:800;
+      margin:0;
+    }
+
+    .marca span{
+      color:#32b64a;
+    }
+
+    .slogan{
+      font-size:11px;
+      font-weight:bold;
+      letter-spacing:.5px;
+      margin:8px 0 25px 0;
+    }
+
+    .card{
+      background:white;
+      padding:25px 20px;
+      border-radius:18px;
+      box-shadow:0 4px 18px rgba(0,0,0,.10);
+    }
+
+    h2{
+      margin-top:0;
+    }
+
+    input{
+      width:100%;
+      box-sizing:border-box;
+      padding:15px;
+      margin:8px 0;
+      border:1px solid #ccc;
+      border-radius:10px;
+      font-size:17px;
+      text-align:center;
+    }
+
+    button{
+      width:100%;
+      box-sizing:border-box;
+      padding:16px;
+      margin-top:12px;
+      border:0;
+      border-radius:11px;
+      color:white;
+      font-size:17px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .entrada{
+      background:#2e7d32;
+    }
+
+    .salida{
+      background:#17365D;
+    }
+
+    #mensaje{
+      margin-top:18px;
+      font-size:16px;
+      font-weight:bold;
+      color:#333;
+    }
+
+    @media (max-width:600px){
+      .contenedor{
+        width:100%;
+        max-width:none;
+        padding:14px;
+      }
+
+      .logo{
+        width:150px;
+      }
+
+      .card{
+        padding:25px 18px;
+      }
+    }
+  </style>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+  <img src="./icono-marcaqr.png"
+       class="logo"
+       alt="MARCAQR">
+
+  <div class="marca">
+    MARCA<span>QR</span>
+  </div>
+
+  <div class="slogan">
+    ASISTENCIA • CONTROL • CONFIANZA
+  </div>
+
+ <div class="card">
+
+  <h2>MARCAQR DOCENTE</h2>
+
+  <p>Escanea el QR de tu institución para registrar tu asistencia.</p>
+
+  <button
+    class="entrada"
+    onclick="iniciarEscaner()">
+    📷 ESCANEAR QR
+  </button>
+
+  <div
+    id="lectorQR"
+    style="width:100%; margin-top:20px; display:none;">
+  </div>
+
+  <div id="mensaje" style="margin-top:15px;"></div>
+<div id="panelMarcacion" style="display:none; margin-top:20px;">
+<img
+  id="logoInstitucionDocente"
+  src=""
+  alt="Logo institución"
+  style="
+    width:220px;
+    height:220px;
+    object-fit:contain;
+    display:block;
+    margin:10px auto 15px auto;
+  "
+>
+  <h2 id="nombreInstitucion">INSTITUCIÓN EDUCATIVA</h2>
+
+  <p>Control inteligente de asistencia</p>
+
+  <div id="fechaHora" style="margin:15px 0; font-weight:bold;"></div>
+
+  <input
+    id="dniDocente"
+    type="text"
+    placeholder="DNI">
+
+  <input
+    id="pinDocente"
+    type="password"
+    placeholder="PIN">
+
+  <button
+    class="entrada"
+    onclick="marcarDocente('ENTRADA')">
+    ✅ MARCAR ENTRADA
+  </button>
+
+  <button
+    class="salida"
+    onclick="marcarDocente('SALIDA')">
+    🚪 MARCAR SALIDA
+  </button>
+
+  <div id="resultadoMarcacion" style="margin-top:15px;"></div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+let escanerQR = null;
+
+function iniciarEscaner() {
+
+  const lector = document.getElementById("lectorQR");
+  const mensaje = document.getElementById("mensaje");
+
+  lector.style.display = "block";
+  mensaje.innerHTML = "📷 Apunta la cámara al QR de la institución.";
+
+  escanerQR = new Html5Qrcode("lectorQR");
+
+  escanerQR.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: 250
+    },
+    function(textoQR) {
+
+      mensaje.innerHTML = "✅ QR detectado. Abriendo MARCAQR...";
+
+      escanerQR.stop().then(function() {
+
+    if (textoQR.startsWith("https://")) {
+
+  mensaje.innerHTML =
+    "✅ QR institucional verificado.";
+
+  document.getElementById("lectorQR").style.display = "none";
+  document.getElementById("panelMarcacion").style.display = "block";
+      
+cargarDatosInstitucion();
+} else {
+
+  mensaje.innerHTML =
+    "❌ QR institucional no válido.";
+}    
+
+      });
+
+    },
+    function(error) {
+      // Sigue buscando el QR
+    }
+  ).catch(function(error) {
+    mensaje.innerHTML =
+      "❌ No se pudo abrir la cámara. Permite el acceso a la cámara.";
+  });
+}
+function actualizarFechaHora() {
+
+  const ahora = new Date();
+
+  const fecha = ahora.toLocaleDateString("es-PE", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  const hora = ahora.toLocaleTimeString("es-PE");
+
+  const elemento = document.getElementById("fechaHora");
+
+  if (elemento) {
+    elemento.innerHTML =
+      "📅 Fecha: " + fecha +
+      "<br>🕐 Hora: " + hora;
+  }
+}
+
+setInterval(actualizarFechaHora, 1000);
+actualizarFechaHora();
+
+
+function marcarDocente(tipo) {
+
+  const dni =
+    document.getElementById("dniDocente").value.trim();
+
+  const pin =
+    document.getElementById("pinDocente").value.trim();
+
+  const resultado =
+    document.getElementById("resultadoMarcacion");
+
+  if (!dni || !pin) {
+    resultado.innerHTML = "❌ Ingrese su DNI y PIN.";
+    return;
+  }
+
+  resultado.innerHTML = "⏳ Registrando asistencia...";
+
+  const script = document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=docente" +
+    "&dni=" + encodeURIComponent(dni) +
+    "&pin=" + encodeURIComponent(pin) +
+    "&tipo=" + encodeURIComponent(tipo) +
+    "&callback=respuestaMarcacion" +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function respuestaMarcacion(datos) {
+
+  const resultado =
+    document.getElementById("resultadoMarcacion");
+
+  if (!datos.ok) {
+    resultado.innerHTML =
+      "❌ " + datos.mensaje;
+    return;
+  }
+
+  resultado.innerHTML =
+    "✅ " + datos.mensaje;
+
+  document.getElementById("dniDocente").value = "";
+  document.getElementById("pinDocente").value = "";
+}  
+ function cargarDatosInstitucion() {
+
+  const script = document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=configDocente" +
+    "&callback=recibirDatosInstitucion" +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function recibirDatosInstitucion(datos) {
+
+  if (!datos.ok) return;
+
+  document.getElementById("nombreInstitucion").textContent =
+    datos.institucion || "INSTITUCIÓN EDUCATIVA";
+
+  const logo =
+    document.getElementById("logoInstitucionDocente");
+
+  if (datos.logo) {
+    logo.src = datos.logo;
+    logo.style.display = "block";
+  } else {
+    logo.style.display = "none";
+  }
+} 
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js");
+}
+</script>
+</body>
+</html>
