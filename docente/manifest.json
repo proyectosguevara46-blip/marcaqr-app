@@ -1,9 +1,9 @@
 {
-  "id": "./marcaqr-docente",
+  "id": "/marcaqr-app/docente/",
   "name": "MARCAQR DOCENTE",
   "short_name": "MARCAQR DOCENTE",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/marcaqr-app/docente/",
+  "scope": "/marcaqr-app/docente/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#17365D",
