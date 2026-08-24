@@ -1,0 +1,23 @@
+{
+  "id": "./marcaqr-docente",
+  "name": "MARCAQR DOCENTE",
+  "short_name": "MARCAQR DOCENTE",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#17365D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "../icono-marcaqr-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../icono-marcaqr-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
