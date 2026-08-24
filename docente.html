@@ -153,7 +153,18 @@
 
   <div id="mensaje" style="margin-top:15px;"></div>
 <div id="panelMarcacion" style="display:none; margin-top:20px;">
-
+<img
+  id="logoInstitucionDocente"
+  src=""
+  alt="Logo institución"
+  style="
+    width:220px;
+    height:220px;
+    object-fit:contain;
+    display:block;
+    margin:10px auto 15px auto;
+  "
+>
   <h2 id="nombreInstitucion">INSTITUCIÓN EDUCATIVA</h2>
 
   <p>Control inteligente de asistencia</p>
@@ -222,7 +233,8 @@ function iniciarEscaner() {
 
   document.getElementById("lectorQR").style.display = "none";
   document.getElementById("panelMarcacion").style.display = "block";
-
+      
+cargarDatosInstitucion();
 } else {
 
   mensaje.innerHTML =
@@ -316,6 +328,37 @@ function respuestaMarcacion(datos) {
   document.getElementById("dniDocente").value = "";
   document.getElementById("pinDocente").value = "";
 }  
+ function cargarDatosInstitucion() {
+
+  const script = document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=configDocente" +
+    "&callback=recibirDatosInstitucion" +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function recibirDatosInstitucion(datos) {
+
+  if (!datos.ok) return;
+
+  document.getElementById("nombreInstitucion").textContent =
+    datos.institucion || "INSTITUCIÓN EDUCATIVA";
+
+  const logo =
+    document.getElementById("logoInstitucionDocente");
+
+  if (datos.logo) {
+    logo.src = datos.logo;
+    logo.style.display = "block";
+  } else {
+    logo.style.display = "none";
+  }
+} 
 </script>
 
 </body>
