@@ -115,6 +115,7 @@
       }
     }
   </style>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 
 <body>
@@ -133,101 +134,72 @@
     ASISTENCIA • CONTROL • CONFIANZA
   </div>
 
-  <div class="card">
+ <div class="card">
 
-    <h2>MARCAQR DOCENTE</h2>
+  <h2>MARCAQR DOCENTE</h2>
 
-    <p>Registra tu entrada o salida</p>
+  <p>Escanea el QR de tu institución para registrar tu asistencia.</p>
 
-    <input
-      id="dniDocente"
-      type="text"
-      placeholder="DNI">
+  <button
+    class="entrada"
+    onclick="iniciarEscaner()">
+    📷 ESCANEAR QR
+  </button>
 
-    <input
-      id="pinDocente"
-      type="password"
-      placeholder="PIN">
-
-    <button class="entrada"
-            onclick="marcarDocente('ENTRADA')">
-      ✅ MARCAR ENTRADA
-    </button>
-
-    <button class="salida"
-            onclick="marcarDocente('SALIDA')">
-      🚪 MARCAR SALIDA
-    </button>
-
-    <div id="mensaje"></div>
-
+  <div
+    id="lectorQR"
+    style="width:100%; margin-top:20px; display:none;">
   </div>
+
+  <div id="mensaje" style="margin-top:15px;"></div>
+
+</div>
 
 </div>
 
 <script>
 
-function marcarDocente(tipo){
+let escanerQR = null;
 
-  const dni =
-    document.getElementById("dniDocente")
-      .value
-      .trim();
+function iniciarEscaner() {
 
-  const pin =
-    document.getElementById("pinDocente")
-      .value
-      .trim();
+  const lector = document.getElementById("lectorQR");
+  const mensaje = document.getElementById("mensaje");
 
-  const mensaje =
-    document.getElementById("mensaje");
+  lector.style.display = "block";
+  mensaje.innerHTML = "📷 Apunta la cámara al QR de la institución.";
 
-  if(!dni || !pin){
+  escanerQR = new Html5Qrcode("lectorQR");
+
+  escanerQR.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: 250
+    },
+    function(textoQR) {
+
+      mensaje.innerHTML = "✅ QR detectado. Abriendo MARCAQR...";
+
+      escanerQR.stop().then(function() {
+
+        if (textoQR.startsWith("https://")) {
+          window.location.href = textoQR;
+        } else {
+          mensaje.innerHTML = "❌ QR no válido.";
+        }
+
+      });
+
+    },
+    function(error) {
+      // Sigue buscando el QR
+    }
+  ).catch(function(error) {
     mensaje.innerHTML =
-      "Ingrese su DNI y PIN.";
-    return;
-  }
-
-  mensaje.innerHTML =
-    "Registrando...";
-
-  const callback =
-    "respuestaMarcacion";
-
-  const script =
-    document.createElement("script");
-
-  script.src =
-    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
-    "?api=docente" +
-    "&dni=" + encodeURIComponent(dni) +
-    "&pin=" + encodeURIComponent(pin) +
-    "&tipo=" + encodeURIComponent(tipo) +
-    "&callback=" + callback +
-    "&t=" + Date.now();
-
-  document.body.appendChild(script);
+      "❌ No se pudo abrir la cámara. Permite el acceso a la cámara.";
+  });
 }
-
-
-function respuestaMarcacion(datos){
-
-  const mensaje =
-    document.getElementById("mensaje");
-
-  if(!datos.ok){
-    mensaje.innerHTML =
-      "❌ " + datos.mensaje;
-    return;
-  }
-
-  mensaje.innerHTML =
-    datos.mensaje;
-
-  document.getElementById("dniDocente").value = "";
-  document.getElementById("pinDocente").value = "";
-}
-
 </script>
 
 </body>
