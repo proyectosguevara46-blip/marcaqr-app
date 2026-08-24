@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MARCAQR DOCENTE</title>
+
+  <link rel="icon" type="image/png" href="./icono-marcaqr-192.png">
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#f3f6f8;
+      text-align:center;
+      color:#17365D;
+    }
+
+    .contenedor{
+      max-width:430px;
+      margin:30px auto;
+      padding:22px;
+      box-sizing:border-box;
+    }
+
+    .logo{
+      width:170px;
+      height:auto;
+      display:block;
+      margin:10px auto 10px auto;
+    }
+
+    .marca{
+      font-size:32px;
+      font-weight:800;
+      margin:0;
+    }
+
+    .marca span{
+      color:#32b64a;
+    }
+
+    .slogan{
+      font-size:11px;
+      font-weight:bold;
+      letter-spacing:.5px;
+      margin:8px 0 25px 0;
+    }
+
+    .card{
+      background:white;
+      padding:25px 20px;
+      border-radius:18px;
+      box-shadow:0 4px 18px rgba(0,0,0,.10);
+    }
+
+    h2{
+      margin-top:0;
+    }
+
+    input{
+      width:100%;
+      box-sizing:border-box;
+      padding:15px;
+      margin:8px 0;
+      border:1px solid #ccc;
+      border-radius:10px;
+      font-size:17px;
+      text-align:center;
+    }
+
+    button{
+      width:100%;
+      box-sizing:border-box;
+      padding:16px;
+      margin-top:12px;
+      border:0;
+      border-radius:11px;
+      color:white;
+      font-size:17px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .entrada{
+      background:#2e7d32;
+    }
+
+    .salida{
+      background:#17365D;
+    }
+
+    #mensaje{
+      margin-top:18px;
+      font-size:16px;
+      font-weight:bold;
+      color:#333;
+    }
+
+    @media (max-width:600px){
+      .contenedor{
+        width:100%;
+        max-width:none;
+        padding:14px;
+      }
+
+      .logo{
+        width:150px;
+      }
+
+      .card{
+        padding:25px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+  <img src="./icono-marcaqr.png"
+       class="logo"
+       alt="MARCAQR">
+
+  <div class="marca">
+    MARCA<span>QR</span>
+  </div>
+
+  <div class="slogan">
+    ASISTENCIA • CONTROL • CONFIANZA
+  </div>
+
+  <div class="card">
+
+    <h2>MARCAQR DOCENTE</h2>
+
+    <p>Registra tu entrada o salida</p>
+
+    <input
+      id="dniDocente"
+      type="text"
+      placeholder="DNI">
+
+    <input
+      id="pinDocente"
+      type="password"
+      placeholder="PIN">
+
+    <button class="entrada"
+            onclick="marcarDocente('ENTRADA')">
+      ✅ MARCAR ENTRADA
+    </button>
+
+    <button class="salida"
+            onclick="marcarDocente('SALIDA')">
+      🚪 MARCAR SALIDA
+    </button>
+
+    <div id="mensaje"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+function marcarDocente(tipo){
+
+  const dni =
+    document.getElementById("dniDocente")
+      .value
+      .trim();
+
+  const pin =
+    document.getElementById("pinDocente")
+      .value
+      .trim();
+
+  const mensaje =
+    document.getElementById("mensaje");
+
+  if(!dni || !pin){
+    mensaje.innerHTML =
+      "Ingrese su DNI y PIN.";
+    return;
+  }
+
+  mensaje.innerHTML =
+    "Registrando...";
+
+  const callback =
+    "respuestaMarcacion";
+
+  const script =
+    document.createElement("script");
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbwjzk4Sp5Bw-rQDlYje2y6llUT3skcyek0tu04r3vf5vl-B9QFDXNrb0BrYWC81pfZ5/exec" +
+    "?api=docente" +
+    "&dni=" + encodeURIComponent(dni) +
+    "&pin=" + encodeURIComponent(pin) +
+    "&tipo=" + encodeURIComponent(tipo) +
+    "&callback=" + callback +
+    "&t=" + Date.now();
+
+  document.body.appendChild(script);
+}
+
+
+function respuestaMarcacion(datos){
+
+  const mensaje =
+    document.getElementById("mensaje");
+
+  if(!datos.ok){
+    mensaje.innerHTML =
+      "❌ " + datos.mensaje;
+    return;
+  }
+
+  mensaje.innerHTML =
+    datos.mensaje;
+
+  document.getElementById("dniDocente").value = "";
+  document.getElementById("pinDocente").value = "";
+}
+
+</script>
+
+</body>
+</html>
