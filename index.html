@@ -634,7 +634,7 @@ document.getElementById("portadaMarcaqr").style.display = "none";
   </div>
 
   <div class="institucionBloque">
-    <img src="./logo-ininpe.png"
+    <img src="${datos.logoInstitucion || './logo-ininpe.png'}"
          class="logoInstitucion"
          alt="ININPE">
 
@@ -1224,9 +1224,10 @@ function exportarPDF() {
     unit: "mm",
     format: "a4"
   });
-const logoColegio = new Image();
-logoColegio.src = "./logo-ininpe.png";
 
+const logoColegio = document.querySelector(".logoInstitucion");
+
+if (logoColegio && logoColegio.complete) {
 try {
   doc.addImage(
     logoColegio,
@@ -1255,7 +1256,7 @@ try {
   doc.setTextColor(0, 0, 0);
 
   doc.text(
-    "ININPE JV",
+     ultimoReporteMensual.institucion || "INSTITUCIÓN EDUCATIVA",
     148,
     27,
     { align: "center" }
